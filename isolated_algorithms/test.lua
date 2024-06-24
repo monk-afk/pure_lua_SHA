@@ -28,6 +28,11 @@ for k,_ in pairs(sha5) do
   print(k, sha5[k](message..salt), "\n")
 end
 
+local sha3 = dofile("sha3.lua")
+for k,_ in pairs(sha3) do
+  print(k, sha3[k](message..salt), "\n")
+end
+
 print("Random Salt:", salt)
 print("Salted Message:", msg_salt)
 print("Padded Message:", msg_pad)
