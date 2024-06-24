@@ -24,11 +24,22 @@
   --       local your_hash = sha.sha256("your string")
   --    See file "sha2_test.lua" for more examples.
   -------------------------------------------------------------------------------
-  local unpack, table_concat, byte, char, string_rep, sub, gsub, gmatch,
-      string_format, floor, ceil, math_min, math_max, tonumber, type, math_huge =
-      table.unpack or unpack, table.concat, string.byte, string.char,
-      string.rep, string.sub, string.gsub, string.gmatch, string.format, 
-      math.floor, math.ceil, math.min, math.max, tonumber, type, math.huge
+local unpack = table.unpack or unpack
+local concat = table.concat
+local byte = string.byte
+local char = string.char
+local string_rep = string.rep
+local sub = string.sub
+local gsub = string.gsub
+local gmatch = string.gmatch
+local string_format = string.format
+local floor = math.floor
+local ceil = math.ceil
+local math_min = math.min
+local math_max = math.max
+local tonumber = tonumber
+local type = type
+local math_huge = math.huge
 
     -- local path = minetest.get_modpath(minetest.get_current_modname()).."/"
     -- local sha = dofile(path.."sha_lib.lua")
@@ -1279,13 +1290,13 @@
                 length = length % 1 * 256
                 final_blocks[j] = char(floor(length))
               end
-              final_blocks = table_concat(final_blocks)
+              final_blocks = concat(final_blocks)
               sha256_feed_64(H, final_blocks, 0, #final_blocks)
               local max_reg = width / 32
               for j = 1, max_reg do
                 H[j] = HEX(H[j])
               end
-              H = table_concat(H, "", 1, max_reg)
+              H = concat(H, "", 1, max_reg)
           end
           return H
         end
@@ -1334,7 +1345,7 @@
                 length = length % 1 * 256
                 final_blocks[j] = char(floor(length))
               end
-              final_blocks = table_concat(final_blocks)
+              final_blocks = concat(final_blocks)
               sha512_feed_128(H_lo, H_hi, final_blocks, 0, #final_blocks)
               local max_reg = ceil(width / 64)
               if HEX64 then
@@ -1347,7 +1358,7 @@
                 end
                 H_hi = nil
               end
-              H_lo = sub(table_concat(H_lo, "", 1, max_reg), 1, width / 4)
+              H_lo = sub(concat(H_lo, "", 1, max_reg), 1, width / 4)
           end
           return H_lo
         end
@@ -1395,12 +1406,12 @@
                 final_blocks[j] = char(low_byte)
                 length = (length - low_byte) / 256
               end
-              final_blocks = table_concat(final_blocks)
+              final_blocks = concat(final_blocks)
               md5_feed_64(H, final_blocks, 0, #final_blocks)
               for j = 1, 4 do
                 H[j] = HEX(H[j])
               end
-              H = gsub(table_concat(H), "(..)(..)(..)(..)", "%4%3%2%1")
+              H = gsub(concat(H), "(..)(..)(..)(..)", "%4%3%2%1")
           end
           return H
         end
@@ -1449,12 +1460,12 @@
                 length = length % 1 * 256
                 final_blocks[j] = char(floor(length))
               end
-              final_blocks = table_concat(final_blocks)
+              final_blocks = concat(final_blocks)
               sha1_feed_64(H, final_blocks, 0, #final_blocks)
               for j = 1, 5 do
                 H[j] = HEX(H[j])
               end
-              H = table_concat(H)
+              H = concat(H)
           end
           return H
         end
@@ -1526,7 +1537,7 @@
                 end
                 lanes_used = lanes_used + qwords_qty
                 return
-                  gsub(table_concat(qwords, "", 1, qwords_qty), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"),
+                  gsub(concat(qwords, "", 1, qwords_qty), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"),
                   qwords_qty * 8
             end
 
@@ -1563,7 +1574,7 @@
                 else
                   last_part, last_part_size = "", 0
                 end
-                return table_concat(parts, "", 1, parts_qty)
+                return concat(parts, "", 1, parts_qty)
             end
 
             if digest_size_in_bytes < 0 then
@@ -1629,7 +1640,7 @@
         ..base64_symbols[c3 and c2 % 16 * 4 + floor(c3 / 64) or -1]
         ..base64_symbols[c4 and c3 % 64 or -1]
     end
-    return table_concat(result)
+    return concat(result)
   end
 
   local function base64_to_bin(base64_string)
@@ -1650,7 +1661,7 @@
         result[#result + 1] = sub(char(c1, c2, c3), 1, chars_qty)
       end
     end
-    return table_concat(result)
+    return concat(result)
   end
 
   local block_size_for_HMAC  -- this table will be initialized at the end of the module
@@ -1784,7 +1795,7 @@
                 for j = 1, max_reg do
                     H[j] = HEX(H[j])
                 end
-                H = sub(gsub(table_concat(H, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, digest_size_in_bytes * 2)
+                H = sub(gsub(concat(H, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, digest_size_in_bytes * 2)
               end
           end
           return H
@@ -1892,7 +1903,7 @@
                       H_lo[j] = HEX64(H_lo[j])
                     end
                 end
-                H_lo = sub(gsub(table_concat(H_lo, "", 1, max_reg), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"), 1, digest_size_in_bytes * 2)
+                H_lo = sub(gsub(concat(H_lo, "", 1, max_reg), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"), 1, digest_size_in_bytes * 2)
               end
               H_hi = nil
           end
@@ -1999,7 +2010,7 @@
               for j = 1, max_reg do
                 root_H[j] = HEX(root_H[j])
               end
-              result = sub(gsub(table_concat(root_H, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, digest_size_in_bytes * 2)
+              result = sub(gsub(concat(root_H, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, digest_size_in_bytes * 2)
           end
           return result
         end
@@ -2116,7 +2127,7 @@
                     root_H_lo[j] = HEX(root_H_hi[j])..HEX(root_H_lo[j])
                 end
               end
-              result = sub(gsub(table_concat(root_H_lo, "", 1, max_reg), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"), 1, digest_size_in_bytes * 2)
+              result = sub(gsub(concat(root_H_lo, "", 1, max_reg), "(..)(..)(..)(..)(..)(..)(..)(..)", "%8%7%6%5%4%3%2%1"), 1, digest_size_in_bytes * 2)
           end
           return result
         end
@@ -2214,7 +2225,7 @@
                           size = size - part_size
                           pos = (pos + part_size) % period
                       end
-                      return table_concat(hash, "", 1, index)
+                      return concat(hash, "", 1, index)
                     end
                 end
 
@@ -2223,7 +2234,7 @@
                 for j = 1.0, ceil(digest_size_in_bytes / block_size) do
                     hash[j] = get_hash_block(j - 1.0)
                 end
-                result = table_concat(hash)
+                result = concat(hash)
               end
           end
           return result
@@ -2352,7 +2363,7 @@
         for j = 1, max_reg do
           stack[j] = HEX(stack[j])
         end
-        return sub(gsub(table_concat(stack, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, size * 2)
+        return sub(gsub(concat(stack, "", 1, max_reg), "(..)(..)(..)(..)", "%4%3%2%1"), 1, size * 2)
     end
 
     local function partial(message_part)
@@ -2435,7 +2446,7 @@
                           size = size - part_size
                           pos = pos + part_size
                       end
-                      return table_concat(stack, "", 33, index)
+                      return concat(stack, "", 33, index)
                     end
                 end
 
@@ -2447,7 +2458,7 @@
                 for block_no = 0.0, last_block_no do
                     stack[33 + block_no] = get_hash_block(block_no)
                 end
-                result = table_concat(stack, "", 33, 33 + last_block_no)
+                result = concat(stack, "", 33, 33 + last_block_no)
               end
           end
           return result
@@ -2489,7 +2500,6 @@
     sha512_224 = function(message) return sha512ext(224, message) end,
     sha512_256 = function(message) return sha512ext(256, message) end,
     sha384     = function(message) return sha512ext(384, message) end,
-    sha512     = function(message) return sha512ext(512, message) end,
     -- SHA-3 hash functions:
     sha3_224   = function(message) return keccak((1600 - 2 * 224) / 8, 224 / 8, false, message) end,
     sha3_256   = function(message) return keccak((1600 - 2 * 256) / 8, 256 / 8, false, message) end,
@@ -2497,12 +2507,12 @@
     sha3_512   = function(message) return keccak((1600 - 2 * 512) / 8, 512 / 8, false, message) end,
     shake128   = function(message, digest_size_in_bytes) return keccak((1600 - 2 * 128) / 8, (digest_size_in_bytes or 32), true, message) end,
     shake256   = function(message, digest_size_in_bytes) return keccak((1600 - 2 * 256) / 8, (digest_size_in_bytes or 64), true, message) end,
-    -- hmac       = function(hash_func, message, key) return hmac(hash_func, key, message) end,
+    hmac       = function(hash_func, message, key) return hmac(hash_func, key, message) end,
     -- misc utilities:
-    hex_to_bin = function(hex_string) return hex_to_bin(hex_string) end,
-    bin_to_hex = function(bin_string) return bin_to_hex(bin_string) end,
-    bin_to_base64 = function(binary_string) return bin_to_base64(binary_string) end,
-    base64_to_bin = function(base64_string) return base64_to_bin(base64_string) end,
+    hex2bin  = function(hex_string) return hex_to_bin(hex_string) end,
+    bin2hex  = function(bin_string) return bin_to_hex(bin_string) end,
+    bin2base = function(binary_string) return bin_to_base64(binary_string) end,
+    base2bin = function(base64_string) return base64_to_bin(base64_string) end,
     -- BLAKE2 hash functions:
     blake2s    = function(message, key, salt) return blake2s(message, key, salt, 32) end,
     blake2b    = function(message, key, salt) return blake2b(message, key, salt, 64) end,
@@ -2511,7 +2521,7 @@
     blake2xb   = function(message, key, salt) return blake2xb(512, message, key, salt) end,
     blake2xs   = function(message, key, salt) return blake2xs(512, message, key, salt) end,
     -- BLAKE3 hash function
-    blake3 = function(message, key) return blake3(message, key, 32) end,
+    blake3 = function(message, key) return blake3(message, key, 512) end,
   }
 
 
@@ -2576,50 +2586,55 @@ local function benchmark(hash_func, number_of_measures)
    end
 end
 
-local function run_benchpress(numb)
-  local number_of_measures = 5
-  local numb = tonumber(numb)
-  if numb and numb >= 1 then
-    number_of_measures = numb
-  end
+local function run_benchpress(number_of_measures, algorithms)
+  local number_of_measures = tonumber(number_of_measures) and number_of_measures or 5
 
-  for _, algo in ipairs{
+  if number_of_measures <= 0 then
+    number_of_measures = 1
+  end
+  print(number_of_measures)
+  local algorithms = type(algorithms) == "table" and algorithms or {
       "blake2b", "blake2bp", "blake2s", "blake2sp", "blake2xb",
       "blake2xs", "blake3", "md5", "sha1", "sha224", "sha256",
       "sha3_224", "sha3_256", "sha3_384", "sha3_512", "sha384",
       "sha512_224", "sha512_256", "sha512", "shake128", "shake256"
-    } do
+    }
 
-    print()
-    print(algo:gsub("_", "-"):upper())
-    benchmark(sha[algo], number_of_measures)
+  if algorithm then
+    for a = 1, #algorithms do
+      print(algorithms[a])
+      print()
+      print(algo:gsub("_", "-"):upper())
+      benchmark(sha[algorithms[a]], number_of_measures)
+    end
   end
 end
 
-  minetest.register_chatcommand("shaman", {
-    description = "test shash",
-    params = "<algorithm|dump|bench> [message]",
-    privs = {server = true},
-    func = function(name, params)
-      local algorithm = params:gsub("^([%S]+)%s*(.*)$", function(algorithm, message)
 
-        if sha[algorithm] then
-          print("'"..(message).."' > "..algorithm..":"..sha[algorithm](message))
-          
-        elseif algorithm == "dump" then
-          print("Dumping available hashes on string: '"..(message).."'")
-          for algo in pairs(sha) do
-            if algo then
-              print(algo..":"..sha[algo](message))
-            end
+minetest.register_chatcommand("shaman", {
+  description = "test shash",
+  params = "<algorithm|dump|bench> [message]",
+  privs = {server = true},
+  func = function(name, params)
+    local algorithm = params:gsub("^([%S]+)%s*(.*)$", function(algorithm, message)
+
+      if sha[algorithm] then
+        print("'"..(message).."' > "..algorithm..":"..sha[algorithm](message))
+        
+      elseif algorithm == "dump" then
+        print("Dumping available hashes on string: '"..(message).."'")
+        for algo in pairs(sha) do
+          if algo then
+            print(algo..":"..sha[algo](message))
           end
-
-        elseif string.match(algorithm, "bench") then
-          run_benchpress(message) -- number or reps
-
-        else
-          minetest.chat_send_player(name, "Hash Algorithm: '"..algorithm.."' not found.")
         end
-      end)
-    end
-  })
+
+      elseif string.match(algorithm, "bench") then
+        run_benchpress(message) -- number or reps
+
+      else
+        minetest.chat_send_player(name, "Hash Algorithm: '"..algorithm.."' not found.")
+      end
+    end)
+  end
+})
